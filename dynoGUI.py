@@ -8,4 +8,7 @@ Created on Tue Feb 26 14:48:21 2019
 from guizero import App
 
 app = App(title="Hello bitches")
+
+welcome_message = Text(app, text="Welcome to my app")
+
 app.display()
