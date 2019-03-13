@@ -22,7 +22,7 @@ class HallEffectReader:
         GPIO.add_event_detect(
             channel, 
             GPIO.FALLING,
-            callback = self.elapsed_callback,
+            callback = self.elapse_callback,
             bouncetime = 10) # minimum time between callbacks (msecs)
         
         # current time
@@ -34,7 +34,7 @@ class HallEffectReader:
         # total number of complete revolution by the magnet 
         self.pulse = 0 
         
-    def elapsed_callback(self):
+    def elapse_callback(self):
         """The callback function that will count the pulses of the
         tachometer.
         """
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     try:
         while True:
             # calculate speed
-            elaspe = reader.get_elapse()
+            elapse = reader.get_elapse()
             speed = calculate_speed(15, elapse)
             
             # display content every second
