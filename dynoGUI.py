@@ -5,7 +5,7 @@ Created on Tue Feb 26 14:48:21 2019
 @author: Sandra
 """
 
-from guizero import App, Text, TextBox, PushButton
+from guizero import App, Text, TextBox, PushButton, Picture
 from dynamometer import dynamometer
 
 
@@ -28,14 +28,16 @@ def displayValues():
     five = Text(app, text="torque: " + str(mydyno.torque), grid=[1,11], align="left")
 
 app = App(title="Dyno Testing", width=500,height=500,layout="grid")
-#mydyno = dyno(.622, 1)
 
-welcome_message = Text(app, text="Welcome to the Dyno GUI",size=30, color="green", grid=[1,0], align="center")
+dinopicture = Picture(app, image="dinosaur.jpg", grid=[0,0])
 
+welcome_message = Text(app, text="Welcome to the Dyno GUI",size=30, color="green", grid=[1,0], width="fill", align="center")
+
+dinopicture2 = Picture(app, image="dinosaur.jpg", grid=[2,0])
 """
 Diameter
 """
-d_description = Text(app, text="Diameter (meters): ", grid=[1,1], align="left")
+d_description = Text(app, text="Diameter (mm): ", grid=[1,1], align="left")
 input_diameter = TextBox(app, grid=[1,1], width=10, align="center")
 update_diameter = PushButton(app, command=updateD, text="Update Diameter",grid=[1,2],align="center" )
 
