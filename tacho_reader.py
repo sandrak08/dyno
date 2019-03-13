@@ -16,7 +16,7 @@ class HallEffectReader:
         GPIO.setwarnings(False)
         
         # initialize general purpose input pin
-        GPIO.setup(hall_pin, GPIO.IN, GPIO.PUD_UP)
+        GPIO.setup(channel, GPIO.IN, GPIO.PUD_UP)
         
         # initialize interrupt for hall effect sensor's edge detection 
         GPIO.add_event_detect(
@@ -84,6 +84,7 @@ if __name__ == "__main__":
     reader = HallEffectReader(12)
     
     try:
+        
         while True:
             # calculate speed
             elapse = reader.get_elapse()
@@ -93,7 +94,7 @@ if __name__ == "__main__":
             print("Speed (mph): {:.3f}".format(speed))
             time.sleep(1)
             
-    # loop until keyboard interrupt (CTRL+C)      
+    # loop until keyboard interrupt (CTRL+C)
     except KeyboardInterrupt:
         reader.clean_up()
         
