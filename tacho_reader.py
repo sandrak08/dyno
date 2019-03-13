@@ -23,15 +23,20 @@ class HallEffectReader:
             channel, 
             GPIO.FALLING,
             callback = self.elapsed_callback,
-            bouncetime = 10) # minimum time between callbacks (msecs) 
+            bouncetime = 10) # minimum time between callbacks (msecs)
         
-        self.current = 0 # current time
-        self.elapse = 0  # time for one complete revolution of the magnet (sec)
-        self.pulse = 0   # total number of complete revolution by the magnet 
+        # current time
+        self.current = 0
+        
+        # time for one complete revolution of the magnet (sec)
+        self.elapse = 0
+        
+        # total number of complete revolution by the magnet 
+        self.pulse = 0 
         
     def elapsed_callback(self):
         """The callback function that will count the pulses of the
-            tachometer.
+        tachometer.
         """
         self.pulse += 1
         self.elapse = time.time() - self.current
