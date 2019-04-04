@@ -95,7 +95,7 @@ if __name__ == "__main__":
             # calculate speed
             elapse = reader.get_elapse()
             speed = calculate_speed(radius, elapse)
-            
+
             # display content every second
             print("Speed (mph): {:.3f}".format(speed))
             time.sleep(0.5)
