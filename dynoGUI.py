@@ -8,9 +8,11 @@ The GUI
 
 from guizero import App, Text, TextBox, PushButton, Picture
 from dynamometer import dynamometer
+from tacho_reader import HallEffectReader, calculate_speed
 
 # This function updates the diameter
 def updateD():
+    input_diameter = args[0]
     dynodiameter = input_diameter.value
     mydyno.updateWheel(dynodiameter)
     
@@ -32,36 +34,45 @@ def displayValues():
 
 
 
+def setup_gui():
+    app = App(title="Dyno Testing", width=610, height=500,
+        layout="grid", bg="#fdbbff")
+    
+    welcome_message = Text(app, text="Welcome to the Dyno GUI",
+       size=30, color="blue", grid=[1,0], width="fill")
 
-app = App(title="Dyno Testing", width=610,height=500,layout="grid", bg="#fdbbff")
+    dinopicture = Picture(app, image="dinosaur1.gif", grid=[0,0])
+    dinopicture2 = Picture(app, image="dinosaur1.gif", grid=[2,0])
+    
+    
+    """
+    Diameter
+    """
+    d_description = Text(app, text="Diameter (mm): ", grid=[1,1], align="left")
+    input_diameter = TextBox(app, grid=[1,1], width=10)
+    update_diameter = PushButton(app, command=updateD, text="Update Diameter",
+        grid=[1,2], args=[input_diameter])
 
-dinopicture = Picture(app, image="dinosaur1.gif", grid=[0,0])
-
-welcome_message = Text(app, text="Welcome to the Dyno GUI",size=30, color="blue", grid=[1,0], width="fill")
-dinopicture2 = Picture(app, image="dinosaur1.gif", grid=[2,0])
-"""
-Diameter
-"""
-d_description = Text(app, text="Diameter (mm): ", grid=[1,1], align="left")
-input_diameter = TextBox(app, grid=[1,1], width=10)
-update_diameter = PushButton(app, command=updateD, text="Update Diameter",grid=[1,2] )
+    """
+    Horsepower
+    """
+    h_description = Text(app, text="Horsepower (hp): ", grid=[1,4],
+        align="left")
+    input_horsepower = TextBox(app, grid=[1,4], width=10)
+    update_horsepower = PushButton(app, command=updateH,
+        text="Update Horsepower", grid=[1,5],align="top" )
 
 
-"""
-Horsepower
-"""
-h_description = Text(app, text="Horsepower (hp): ", grid=[1,4], align="left")
-input_horsepower = TextBox(app, grid=[1,4], width=10)
-update_horsepower = PushButton(app, command=updateH, text="Update Horsepower", grid=[1,5],align="top" )
+    """
+    Initiates the dyno
+    """
+    mydyno = dynamometer(0, 0)
+    show_info = PushButton(app,command=displayValues, text= "Calculate Results", grid=[1,6])
+    
+    app.display()
 
-
-"""
-initiates the dyno
-"""
-mydyno = dynamometer(0, 0)
-show_info = PushButton(app,command=displayValues, text= "Calculate Results", grid=[1,6])
-
-app.display()
-
+if __name__ == "__main__":
+    
+    setup_gui()
     
 

@@ -6,6 +6,8 @@ Created on Tue Feb 26 19:06:06 2019
 """
 
 import math
+import time
+from tacho_reader import HallEffectReader
 
 class dynamometer:
     def __init__(self, d, h):
@@ -56,8 +58,35 @@ class dynamometer:
         self.horsepower = h
         self.rpm = 1000.0 #temporary for the sake of calculating
         self.speed = 0
+        self.tacho = None
     
-    def calculate(self):
+    def enable_tacho(self):
+        self.tacho = HallEffectReader(12)
+        print("tacho worked bitch")
+        
+    def run_tacho(self):
+        if not self.tacho:
+            print("Reader is not initialized")
+            return
+        try:
+            elapse = 0
+            while True:
+                # calculate speed
+                #elapse = self.tacho.get_elapse()
+                elapse += 1
+                self.speed = elapse
+                #self.speed = self.calculate(elapse)
+                # display content every second
+                print("Speed (mph): {:.3f}".format(self.speed))
+                time.sleep(0.5)
+        
+                
+        # loop until keyboard interrupt (CTRL+C)
+        except KeyboardInterrupt:
+            reader.clean_up()
+        
+
+    def calculate(self, elapse_time):
         # 1 horsepower = 746 watts
         # 1 watt = 1 newton
         
@@ -70,8 +99,24 @@ class dynamometer:
         More calculations to come once we get the sensors hooked up*
         """
         
+        # to avoid error in frequency calculation
+        if elapse_time == 0:
+            return 0;
+        
+        # calculate frequency (rps) and scale (rph)
+        frequency = 1 / elapse_time
+        frequency = frequency * 3600 
+        
+        # calculate circumference (mm) and scale (mile)
+        circumference = math.pi * self.wheelDiameter
+        circumference = circumference * 6.2137e-7
+        
+        # speed calculation (mph)
+        return circumference * frequency
+        
     def updateWheel(self, dd):
-        self.wheelDiameter = dd
+        self.wheelDiameter = float(dd)
        
     def updateHorse(self, hh):
-        self.horsepower = hh
+        self.horsepower = float(hh)
+
