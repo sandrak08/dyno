@@ -1,4 +1,10 @@
-import RPi.GPIO as GPIO
+try:
+    import RPi.GPIO as GPIO
+except RuntimeError:
+    import GPIO_fake as GPIO
+except ModuleNotFoundError:
+    import GPIO_fake as GPIO
+
 import time
 import math
 
