@@ -1,12 +1,17 @@
 """
 Fake functions to allow programming that is not directly on the Raspberry Pi
 """
-BCM = 1
+FALLING = 32
+RISING = 31
 
-IN = 0
-OUT = 1
+BCM = 11
+BOARD = 10
 
-def setwarning(flag):
+IN = 1
+OUT = 0
+
+
+def setwarningS(flag):
     pass
 
 def setmode(mode):

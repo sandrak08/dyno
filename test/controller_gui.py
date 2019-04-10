@@ -79,7 +79,7 @@ class ControllerGUI:
 
 class MotorControllerPi:
     def __init__(self):
-        GPIO.setwarning(False)
+        GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
 
         # output on pin GPIO19
