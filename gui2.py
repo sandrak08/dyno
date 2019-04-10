@@ -3,13 +3,15 @@ The GUI
 """
 
 from guizero import App, Text, TextBox, PushButton, Picture
+import matplotlib.pyplot as plt
 from dynamometer import dynamometer
 from tacho_reader import HallEffectReader, calculate_speed
-
+from dynograph import LineGraph
 
 class dynoGUI:
     def __init__(self, dyno):
         self.mydyno = dyno
+        self.xspeed = [] #speed of x for graph
         
         self.app = App(title="Dyno Testing", width=610, height=500,
             layout="grid", bg="#fdbbff")
@@ -30,10 +32,11 @@ class dynoGUI:
     def updateH(self, input_horsepower):
         dynohorsepower = input_horsepower.value
         mydyno.updateHorse(dynohorsepower)
-        
+
     def update_speed(self, display_speed):
-        print("djlsf")
         display_speed.value = self.mydyno.speed
+        
+        #self.xspeed.append(display_speed.value)
         display_speed.after(1000, self.update_speed, args=[display_speed]);
 
     # This function displays the values of known variables    
@@ -94,12 +97,24 @@ class dynoGUI:
         get_tacho = PushButton(self.app, command=self.mydyno.enable_tacho,
             text="Enable Tachometer", grid=[1,7])
 
+        ### starts and stops tacho
         start_tacho = PushButton(self.app, command=self.mydyno.run_tacho,
             text ="Start Readings", grid=[1,8])
         
+       ### stop_tacho = PushButton(self.app, command=self.mydyno.run_tacho,
+          ###  text ="Stop Readings", grid=[1,9])
+        
+        """
+        grapphing stuff
+        """
+        show_graph = PushButton(self.app, command=self.mydyno.graphSpeed,
+            text = "Display Graph", grid= [1,9])
+        
         display_speed = Text(self.app, grid=[1,15], text=self.mydyno.speed)
         display_speed.after(100, self.update_speed, [display_speed])
-
+        
+        
+        
         self.app.display()
 
 if __name__ == "__main__":
@@ -110,6 +125,4 @@ if __name__ == "__main__":
     #show_info = PushButton(app,command=displayValues, text= "Calculate Results", grid=[1,6])
     guiInstance = dynoGUI(mydyno)
     theapp = guiInstance.setup_gui()
-
-
 

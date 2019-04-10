@@ -4,10 +4,12 @@ Created on Tue Feb 26 19:06:06 2019
 
 @author: Sandra
 """
-
+import matplotlib.pyplot as plt
 import math
 import time
 from tacho_reader import HallEffectReader
+from dynograph import LineGraph
+
 
 class dynamometer:
     def __init__(self, d, h):
@@ -59,32 +61,57 @@ class dynamometer:
         self.rpm = 1000.0 #temporary for the sake of calculating
         self.speed = 0
         self.tacho = None
+        
+        self.xreadings = [] #readings to be read
+        self.yreadings = [] #y axis
+        self.run = 0 #tacho true/false run
     
     def enable_tacho(self):
         self.tacho = HallEffectReader(12)
         print("tacho worked bitch")
         
-    def run_tacho(self):
+        
+    def switch_tacho(self):
+        # turns tacho on state
+        if self.run == 0:
+            self.run = 1
+            
+        # tacho off state
+        else:
+            self.run = 0
+            
+    def run_tacho(self, reading_amount = 10):
+        
+        #turns on and off tacho every time this function/button is clicked
+        self.switch_tacho()
+        
         if not self.tacho:
             print("Reader is not initialized")
             return
-        try:
-            elapse = 0
-            while True:
-                # calculate speed
-                #elapse = self.tacho.get_elapse()
-                elapse += 1
-                self.speed = elapse
-                #self.speed = self.calculate(elapse)
-                # display content every second
-                print("Speed (mph): {:.3f}".format(self.speed))
-                time.sleep(0.5)
         
+        # runs only if in the reading state
+        if self.run == 1:
+            try:
+                elapse = 0
+                for x in range (0, reading_amount):
+                    # calculate speed
+                    #elapse = self.tacho.get_elapse()
+                    elapse += 1
+                    self.speed = elapse
+                    self.yreadings.append(self.speed)
+                    self.xreadings.append(x/2.0) #because they are recorded every half second
+                    
+                    #self.speed = self.calculate(elapse)
+                    # display content every second
+                    print("Speed (mph): {:.3f}".format(self.speed))
+                    
+                    time.sleep(0.5)
+                    
+                    
+            # loop until keyboard interrupt (CTRL+C)
+            except KeyboardInterrupt:
+                reader.clean_up()
                 
-        # loop until keyboard interrupt (CTRL+C)
-        except KeyboardInterrupt:
-            reader.clean_up()
-        
 
     def calculate(self, elapse_time):
         # 1 horsepower = 746 watts
@@ -119,4 +146,11 @@ class dynamometer:
        
     def updateHorse(self, hh):
         self.horsepower = float(hh)
+        
+    def graphSpeed(self):
+        graph1 = LineGraph()
+        graph1.addx(self.xreadings)
+        graph1.addy(self.yreadings)
+        graph1.display_graph()
+        
 
