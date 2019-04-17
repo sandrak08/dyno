@@ -11,7 +11,7 @@ IN = 1
 OUT = 0
 
 
-def setwarnings(flag):
+def setwarningS(flag):
     pass
 
 def setmode(mode):
@@ -34,3 +34,4 @@ class Pwm:
 
 def PWM(channel, freq):
     return Pwm()
+    
