@@ -62,6 +62,7 @@ class dynamometer:
         self.speed = 0
         self.tacho = None
         
+        self.readingamount = 10
         self.xreadings = [] #readings to be read
         self.yreadings = [] #y axis
         self.run = 0 #tacho true/false run
@@ -80,7 +81,7 @@ class dynamometer:
         else:
             self.run = 0
             
-    def run_tacho(self, reading_amount = 10):
+    def run_tacho(self):
         
         #turns on and off tacho every time this function/button is clicked
         self.switch_tacho()
@@ -93,7 +94,7 @@ class dynamometer:
         if self.run == 1:
             try:
                 elapse = 0
-                for x in range (0, reading_amount):
+                for x in range (0, self.readingamount):
                     # calculate speed
                     #elapse = self.tacho.get_elapse()
                     elapse += 1
@@ -146,6 +147,9 @@ class dynamometer:
        
     def updateHorse(self, hh):
         self.horsepower = float(hh)
+        
+    def updateReading(self, r):
+        self.readingamount = int(r)
         
     def graphSpeed(self):
         graph1 = LineGraph()

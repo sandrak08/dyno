@@ -84,7 +84,7 @@ class MotorControllerPi:
         GPIO.setup(19, GPIO.OUT)
         
         # GPIO19 as PWM with 30 kilohertz frequency
-        self.pwm = GPIO.PWM(19, 1000)
+        self.pwm = GPIO.PWM(19, 2500)
         
         # 50% duty cycle is 0 rpm
         self.pwm.start(50)

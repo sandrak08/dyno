@@ -51,7 +51,7 @@ class PWMReader:
         self.pwm_value = 0
         
         # current time
-        self.current = 0
+        self.current = 0        
         
         # channel (pin) that this reader is grabbing data from
         self.channel_rising = channel_rising
@@ -74,12 +74,12 @@ class PWMReader:
         return self.pwm_value / self.PERIOD
 
 if __name__ == "__main__":
-    reader = PWMReader(23, 24, 1000)
+    reader = PWMReader(23, 24, 500)
     
     try:
         while True:
             duty_cycle = reader.get_duty_cycle()
-            print("duty cycle: {:.3f}".format(duty_cycle))
+            print("duty cycle: {:.1f} %".format(duty_cycle*100))
             
     
     # loop until keyboard interrupt (CRTL+C)

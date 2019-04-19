@@ -14,7 +14,7 @@ class LineGraph:
         
     def display_graph(self):
         plt.plot(self.xvalues, self.yvalues, 'b-')
-        plt.ylabel('Speed (mph)')
+        plt.ylabel('Speed (rpm)')
         plt.xlabel('Time (s)')
         plt.show()
 

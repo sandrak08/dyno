@@ -1,16 +1,20 @@
 """
 The GUI
 """
-
 from guizero import App, Text, TextBox, PushButton, Picture
 import matplotlib.pyplot as plt
 from dynamometer import dynamometer
 from tacho_reader import HallEffectReader, calculate_speed
 from dynograph import LineGraph
 
+import sys
+sys.path.insert(0,'test')
+from controller_gui import MotorControllerPi, ControllerGUI
+
 class dynoGUI:
-    def __init__(self, dyno):
+    def __init__(self, dyno, controller):
         self.mydyno = dyno
+        self.mycontroller = controller
         self.xspeed = [] #speed of x for graph
         
         self.app = App(title="Dyno Testing", width=610, height=500,
@@ -32,6 +36,9 @@ class dynoGUI:
     def updateH(self, input_horsepower):
         dynohorsepower = input_horsepower.value
         mydyno.updateHorse(dynohorsepower)
+        
+    def updateR(self, input_reading):
+        mydyno.updateReading(input_reading.value)
 
     def update_speed(self, display_speed):
         display_speed.value = self.mydyno.speed
@@ -58,6 +65,8 @@ class dynoGUI:
         # five = Text(self.app, text="torque: " + str(mydyno.torque), grid=[1,11],
         #    align="left")
 
+    def display_controller(self):
+        self.mycontroller.display()
 
 
     def setup_gui(self):
@@ -96,11 +105,16 @@ class dynoGUI:
         """
         get_tacho = PushButton(self.app, command=self.mydyno.enable_tacho,
             text="Enable Tachometer", grid=[1,7])
-
-        ### starts and stops tacho
-        start_tacho = PushButton(self.app, command=self.mydyno.run_tacho,
-            text ="Start Readings", grid=[1,8])
         
+        input_readings = TextBox(self.app, grid=[1,8], width=10)
+        update_readings = PushButton(self.app, command=self.updateR,
+            text ="Update Reading Amount", grid=[1,9])
+        update_readings.update_command(command=self.updateR,
+            args=[input_readings])
+        
+                ### starts and stops tacho
+        start_tacho = PushButton(self.app, command=self.mydyno.run_tacho,
+            text ="Start Readings", grid=[1,10])
        ### stop_tacho = PushButton(self.app, command=self.mydyno.run_tacho,
           ###  text ="Stop Readings", grid=[1,9])
         
@@ -108,11 +122,17 @@ class dynoGUI:
         grapphing stuff
         """
         show_graph = PushButton(self.app, command=self.mydyno.graphSpeed,
-            text = "Display Graph", grid= [1,9])
+            text = "Display Graph", grid= [1,11])
         
         display_speed = Text(self.app, grid=[1,15], text=self.mydyno.speed)
         display_speed.after(100, self.update_speed, [display_speed])
         
+        
+        """
+        Controller GUI
+        """
+        show_controllergui = PushButton(self.app, command=self.display_controller,
+            text = "Display Motor Controller", grid= [2,3])
         
         
         self.app.display()
@@ -122,7 +142,8 @@ if __name__ == "__main__":
     Initiates the dyno
     """
     mydyno = dynamometer(0, 0)
-    #show_info = PushButton(app,command=displayValues, text= "Calculate Results", grid=[1,6])
-    guiInstance = dynoGUI(mydyno)
+    c = MotorControllerPi()
+    gui = ControllerGUI(c)
+    guiInstance = dynoGUI(mydyno, gui)
     theapp = guiInstance.setup_gui()
 
