@@ -60,7 +60,7 @@ class dynamometer:
         self.horsepower = h
         self.rpm = 1000.0 #temporary for the sake of calculating
         self.speed = 0
-        self.tacho = None
+        self.tacho = HallEffectReader(12)
         
         self.readingamount = 10
         self.xreadings = [] #readings to be read
@@ -69,7 +69,6 @@ class dynamometer:
     
     def enable_tacho(self):
         self.tacho = HallEffectReader(12)
-        print("tacho worked bitch")
         
         
     def switch_tacho(self):

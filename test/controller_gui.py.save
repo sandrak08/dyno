@@ -1,4 +1,4 @@
-from guizero import App, Slider, Text, PushButton, Window
+frm guizero import App, Slider, Text, PushButton
 
 try:
     import RPi.GPIO as GPIO
@@ -8,16 +8,14 @@ except ModuleNotFoundError:
     import GPIO_fake as GPIO
 
 class ControllerGUI:
-    def __init__(self, controller, main_window=None):
+    def __init__(self, controller):
         self.controller = controller
         
         self.max_rpm = 3500
         self.rpm = 0
         self.direction = 1
-        if not main_window:
-            self.setup_gui()
-        else:
-            self.setup_sub_window(main_window)
+    
+        self.setup_gui()
     
     
     def setup_gui(self):
@@ -34,22 +32,6 @@ class ControllerGUI:
             
         self.backward_button = PushButton(self.app, command=self.set_direction,
             args=[-1], text='Backward', width=50)
-    
-    def setup_sub_window(self, main_window):
-        self.app = Window(main_window, title='Motor Velocity Control')
-        self.rpm_text = Text(self.app, text=str(self.rpm))
-        self.dir_text = Text(self.app,
-            text='Clockwise' if self.direction == 1 else 'Counter Clockwise')
-            
-        self.slider = Slider(self.app, start=0, end=self.max_rpm, width=200,
-            command=self.update_rpm)
-        
-        self.forward_button = PushButton(self.app, command=self.set_direction,
-            args=[1], text='Forward', width=50)
-            
-        self.backward_button = PushButton(self.app, command=self.set_direction,
-            args=[-1], text='Backward', width=50)       
-        
     
     
     def set_direction(self, direction):
