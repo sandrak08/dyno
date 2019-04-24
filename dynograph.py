@@ -5,7 +5,7 @@ class LineGraph:
     def __init__(self):
         self.xvalues = []    #speed
         self.yvalues = []    #power
-        self.tvalues = [1,2,3,4,5,7,6,8,9,10]    #torque
+        self.tvalues = []    #torque
         
     def addx(self, x):
         self.xvalues = x
@@ -19,10 +19,6 @@ class LineGraph:
     
     # where f is the figure/graph you want to display
     def display_graph(self):
-        #f = plt.figure()
-        #ax1 = ax1.plot(self.yvalues, 'xr-')
-        #f.ylabel('Power (hp)')     #left
-        
         fig, ax1 = plt.subplots()
         ax1.plot(self.xvalues, self.yvalues, 'b-')
         ax1.set_xlabel('Speed (rpm)')
@@ -34,11 +30,6 @@ class LineGraph:
         
         fig.tight_layout()
         
-        
-        #plt.plot(self.xvalues, self.yvalues, 'b-')
-        #plt.plot(self.xvalues, self.yvalues, 'r-')
-        #plt.ylabel('Power (hp)')
-       #plt.xlabel('Speed (rpm)')
         plt.show()
         
 

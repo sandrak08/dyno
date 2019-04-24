@@ -7,7 +7,7 @@ Created on Tue Feb 26 19:06:06 2019
 import matplotlib.pyplot as plt
 import math
 import time
-from tacho_reader import HallEffectReader
+from tacho_reader import HallEffectReader, calculate_speed
 from dynograph import LineGraph
 
 
@@ -55,16 +55,20 @@ class dynamometer:
                * Does not have to be provided, however can be later changed
         """
         self.wheelDiameter = d
+        self.mass = 0
         self.torque = 0
         self.power = 0
         self.horsepower = h
         self.rpm = 1000.0 #temporary for the sake of calculating
         self.speed = 0
         self.tacho = HallEffectReader(12)
+        self.degree = 0
+        self.incline = None
         
         self.readingamount = 10
-        self.xreadings = [] #readings to be read
-        self.yreadings = [] #y axis
+        self.xreadings = [] #speed readings
+        self.yreadings = [] #power readings
+        self.treadings = [] #torque readings
         self.run = 0 #tacho true/false run
     
     def enable_tacho(self):
@@ -89,7 +93,31 @@ class dynamometer:
             print("Reader is not initialized")
             return
         
-        # runs only if in the reading state
+
+        if self.run == 1:
+            try:
+                for x in range (0, self.readingamount):
+                    # calculate speed
+                    elapse = self.tacho.get_elapse()
+                    self.speed = self.calculate(elapse)
+
+                    self.torque = self.mass * (self.wheelDiameter /2) * self.speed
+                    self.power = (self.torque * 2 * 3.1415 * self.speed) / 33000
+                    self.treadings.append(self.torque)
+                    self.yreadings.append(self.power)
+                    self.xreadings.append(self.speed)
+                    # display content every second
+                    print("Speed (mph): {:.3f}".format(self.speed))
+                    time.sleep(0.5)
+            
+            # loop until keyboard interrupt (CTRL+C)
+            except KeyboardInterrupt:
+                reader.clean_up()
+        
+
+
+        """
+
         if self.run == 1:
             try:
                 elapse = 0
@@ -98,8 +126,12 @@ class dynamometer:
                     #elapse = self.tacho.get_elapse()
                     elapse += 1
                     self.speed = elapse
-                    self.yreadings.append(self.speed)
-                    self.xreadings.append(x/2.0) #because they are recorded every half second
+                    
+                    self.torque = self.mass * (self.wheelDiameter /2) * self.speed
+                    self.power = (self.torque * 2 * 3.1415 * self.speed) / 33000
+                    self.treadings.append(self.torque)
+                    self.yreadings.append(self.power)
+                    self.xreadings.append(self.speed)
                     
                     #self.speed = self.calculate(elapse)
                     # display content every second
@@ -111,7 +143,7 @@ class dynamometer:
             # loop until keyboard interrupt (CTRL+C)
             except KeyboardInterrupt:
                 reader.clean_up()
-                
+        """        
 
     def calculate(self, elapse_time):
         # 1 horsepower = 746 watts
@@ -119,8 +151,8 @@ class dynamometer:
         
         # subject to change lol
         self.horsepower = float(self.horsepower)
-        self.torque = (self.horsepower * 746.0 ) / (self.rpm * 1.0)
-        
+        #self.torque = (self.horsepower * 746.0 ) / (self.rpm * 1.0)
+        self.torque = .5 * self.mass * (self.wheelDiameter /2) * self.rpm
         
         """
         More calculations to come once we get the sensors hooked up*
@@ -138,6 +170,9 @@ class dynamometer:
         circumference = math.pi * self.wheelDiameter
         circumference = circumference * 6.2137e-7
         
+        
+        
+        
         # speed calculation (mph)
         return circumference * frequency
         
@@ -150,10 +185,19 @@ class dynamometer:
     def updateReading(self, r):
         self.readingamount = int(r)
         
+    def updateMass(self, m):
+        self.mass = int(m)
+    """    
+    def updateIncline(self, i = 0, direction):
+        if i == 0:
+            self.degree = 0
+    """    
+        
     def graphSpeed(self):
         graph1 = LineGraph()
         graph1.addx(self.xreadings)
         graph1.addy(self.yreadings)
+        graph1.addt(self.treadings)
         graph1.display_graph()
         
 
